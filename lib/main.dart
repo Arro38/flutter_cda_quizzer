@@ -16,16 +16,36 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  List<String> questions = [
-    "La terre est ronde",
-    "La terre est plate",
-    "La terre est un cube"
+  List<List<String>> questions = [
+    [
+      "Vous venez de crevez un pneu à St André. Vous n'avez pas de téléphone vous décidez de faire du stop. Une ford fiesta blanche s'arrête et le conducteur vous demande si vous voulez qu'il vous dépanne.",
+      "Vous lui remerciez et vous montez dans la voiture",
+      "Vous lui demandez s'il n'est pas un meurtrier avant !"
+    ],
+    [
+      "Il acquiesce de la tête sans faire attention à la question.",
+      "Au moins il est honnête. Vous montez ! ",
+      "Attends, mais je sais comment changer un pneu voyons !"
+    ],
+    [
+      "Lorsqu'il commence à conduire, il vous demande d'ouvrir la boite à gant. À l’intérieur, vous trouverez un couteau ensanglanté, deux doigts coupés et un CD de T-Matt.",
+      "J'adore T-Matt, je lui donne le CD.",
+      " C'est lui ou moi, je prends le couteau et je le poignarde."
+    ],
+    ["Woaw ! Quelle évasion !", "Recommencer", ""],
+    [
+      "En traversant la route du littoral, vous réfléchissez à la sagesse douteuse de poignarder quelqu’un pendant qu’il conduit une voiture dans laquelle vous êtes.",
+      "Recommencer",
+      ""
+    ],
+    [
+      "Vous vous faites un bon dalon et vous chantez le dernier son de T-matt ensemble. Il vous dépose à Cambaie et il vous demande si vous connaissez un bon endroit pour jeter un corps.",
+      "Recommencer",
+      ""
+    ]
   ];
 
-  List<bool> answers = [true, false, false];
   int questionIndex = 0;
-
-  List<Icon> listIcon = [];
 
   void showAlert() {
     Alert(
@@ -45,7 +65,6 @@ class _MainAppState extends State<MainApp> {
             // refresh the state
             setState(() {
               questionIndex = 0;
-              listIcon = [];
             });
           },
           width: 120,
@@ -54,19 +73,27 @@ class _MainAppState extends State<MainApp> {
     ).show();
   }
 
-  void handleClick(bool answer) {
-    setState(() {
-      if (answer == answers[questionIndex]) {
-        listIcon.add(Icon(Icons.check, color: Colors.green));
-      } else {
-        listIcon.add(Icon(Icons.close, color: Colors.red));
-      }
-    });
-    if (questionIndex + 1 == questions.length) {
-      showAlert();
+  void handleClick(int choice) {
+    if (questionIndex == 3 || questionIndex == 4 || questionIndex == 5) {
+      // showAlert();
+      setState(() {
+        questionIndex = 0;
+      });
     } else {
       setState(() {
-        questionIndex++;
+        if (questionIndex == 0 && choice == 1) {
+          questionIndex = 2;
+        } else if (questionIndex == 0 && choice == 2) {
+          questionIndex = 1;
+        } else if (questionIndex == 1 && choice == 1) {
+          questionIndex = 2;
+        } else if (questionIndex == 1 && choice == 2) {
+          questionIndex = 3;
+        } else if (questionIndex == 2 && choice == 1) {
+          questionIndex = 5;
+        } else if (questionIndex == 2 && choice == 2) {
+          questionIndex = 4;
+        }
       });
     }
   }
@@ -84,7 +111,7 @@ class _MainAppState extends State<MainApp> {
                 Expanded(
                     flex: 5,
                     child: Center(
-                        child: Text(questions[questionIndex],
+                        child: Text(questions[questionIndex][0],
                             style:
                                 TextStyle(color: Colors.white, fontSize: 20)))),
                 Expanded(
@@ -92,31 +119,30 @@ class _MainAppState extends State<MainApp> {
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.green)),
-                        onPressed: () => {handleClick(true)},
+                        onPressed: () => {handleClick(1)},
                         child: Container(
                             width: double.infinity,
                             child: Text(
-                              "Vrai",
+                              questions[questionIndex][1],
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.white),
                             )))),
                 SizedBox(height: 20),
-                Expanded(
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.red)),
-                        onPressed: () => {handleClick(false)},
-                        child: Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Faux",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white),
-                            )))),
-                Expanded(
-                  child: Row(children: listIcon),
-                )
+                questions[questionIndex][2].isEmpty
+                    ? SizedBox()
+                    : Expanded(
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red)),
+                            onPressed: () => {handleClick(2)},
+                            child: Container(
+                                width: double.infinity,
+                                child: Text(
+                                  questions[questionIndex][2],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                )))),
               ],
             ),
           )),
